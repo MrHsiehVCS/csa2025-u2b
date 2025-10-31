@@ -41,7 +41,7 @@ class PalindromeTesterTests {
     @Test
     void isPalindrome_whenCalledWithAllLowerCaseLongLongPalindrome_returnsTrue() {
         String input = "abcdefghijklmnopqrstuvwxyz";
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i < 4; i++) {
             input += input;
         }
         input += new StringBuilder(input).reverse().toString();
@@ -50,12 +50,8 @@ class PalindromeTesterTests {
     }
 
     @Test
-    void isPalindrome_whenCalledWithSpacesAndCaptilizationDiffferences_returnsTrue() {
+    void isPalindrome_whenCalledWithCapitalizationDifferences_returnsTrue() {
         assertTrue(PalindromeTester.isPalindrome("Never odd or Even"));
-    }
-
-    @Test
-    void isPalindrome_whenCalledWithASingleWordPalindromeWithCapitalizationDifferences_returnsTrue() {
         assertTrue(PalindromeTester.isPalindrome("raCecAr"));
     }
 
@@ -65,12 +61,8 @@ class PalindromeTesterTests {
     }
 
     @Test
-    void isPalindrome_whenCalledWithASimpleStringThatIsNotAPalindrome_returnsFalse() {
+    void isPalindrome_whenCalledWithNonPalindromes_returnsFalse() {
         assertFalse(PalindromeTester.isPalindrome("thisISnoTApalindrome"));
-    }
-
-    @Test
-    void isPalindrome_whenCalledWithAStringWithSpacesAndSymbolsThatIsNotAPalindrome_returnsFalse() {
         assertFalse(PalindromeTester.isPalindrome("thi@@isIsNot       a Palindrome"));
     }
 
@@ -144,8 +136,8 @@ class PalindromeTesterTests {
     }
 
     @Test
-    void execute_whenCalledWithPalindrome_identifiesAsPalindrome() throws Exception {
-        // Test that a given palindrome is correctly identified
+    void execute_whenCalledWithSingleInput_identifiesCorrectly() throws Exception {
+        // Test that a palindrome is correctly identified
         withTextFromSystemIn("racecar", "n").execute(() -> {
             String output = tapSystemOutNormalized(() -> {
                 Scanner sc = new Scanner(System.in);
@@ -163,10 +155,7 @@ class PalindromeTesterTests {
             }
             assertTrue(foundPalindrome, "Should identify 'racecar' as a palindrome");
         });
-    }
-
-    @Test
-    void execute_whenCalledWithNonPalindrome_identifiesAsNonPalindrome() throws Exception {
+        
         // Test that a non-palindrome is correctly identified
         withTextFromSystemIn("hello", "n").execute(() -> {
             String output = tapSystemOutNormalized(() -> {

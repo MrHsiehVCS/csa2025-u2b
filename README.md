@@ -196,12 +196,12 @@ Keep testing? (Y)es or (N)o: N
 
 ## Grading Breakdown
 
-- Code compiles & runs without errors: 1 pts
+- Code compiles & runs without errors: 2 pts
 - Formatting/indentation: 2 points
 - All code commented: 2 points
 - No public methods/attributes besides the ones specified: 2 point
-- All code is DRY (Don't repeat yourself): 3 points
-- Passes all test cases: 20 points
+- All code is DRY (Don't repeat yourself): 2 points
+- Passes all test cases: 20 points (20 tests, so 1pt/test)
 Total: 30 points
 
 

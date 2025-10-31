@@ -133,8 +133,7 @@ public class RockPaperScissorsTests {
     }
 
     @Test
-    void results_returnsCorrectValues() {
-
+    void results_withUppercaseInputs_returnsCorrectValues() {
         assertEquals(-1, RockPaperScissors.results("R", "P"));
         assertEquals(0, RockPaperScissors.results("R", "R"));
         assertEquals(1, RockPaperScissors.results("R", "S"));
@@ -144,8 +143,10 @@ public class RockPaperScissorsTests {
         assertEquals(-1, RockPaperScissors.results("P", "S"));
         assertEquals(0, RockPaperScissors.results("P", "P"));
         assertEquals(1, RockPaperScissors.results("P", "R"));
+    }
 
-
+    @Test
+    void results_withLowercaseInputs_returnsCorrectValues() {
         assertEquals(-1, RockPaperScissors.results("r", "p"));
         assertEquals(0, RockPaperScissors.results("r", "r"));
         assertEquals(1, RockPaperScissors.results("r", "s"));
