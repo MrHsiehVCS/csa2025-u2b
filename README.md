@@ -1,4 +1,4 @@
-# Unit 4 Programming Project
+# Unit 2b Programming Project
 
 For this project, you will be completing the code for two classes: `RockPaperScissors` and `PalindromeTester`. Each of these classes have some code that has already been written for you. You should not change any of the provided code. Instead, you should add in your own code in order to fulfill the project requirements. You will also need to JavaDoc all your classes.
 
