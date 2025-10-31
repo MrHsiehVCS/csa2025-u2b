@@ -24,7 +24,14 @@ public class RockPaperScissors {
     }
 
     /* 
-     * create helper methods for part b
-     * I recommend at least making a helper method that returns a random option between "r", "p", and "s"
+     * Helper methods for part b
+     * These should be private static methods that help organize your code
+     * 
+     * Recommended helper methods:
+     * 1. getRandomChoice() - returns a random "r", "p", or "s"
+     * 2. getPlayerChoice(Scanner sc) - prompts user and returns valid R/P/S/A input
+     * 3. getYesNoInput(Scanner sc, String prompt) - prompts user and returns true/false for Y/N
+     * 4. playRound(Scanner sc, int[] scores) - handles one complete round of RPS
+     * 5. formatChoice(String choice) - converts "r" to "Rock", "p" to "Paper", etc.
      */
 }
