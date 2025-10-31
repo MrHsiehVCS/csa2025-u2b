@@ -1,0 +1,38 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "java: compile",
+      "type": "shell",
+      "command": "javac",
+      "args": [
+        "-d",
+        "target/classes",
+        "-sourcepath",
+        "src/main/java",
+        "${file}"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$tsc"
+    },
+    {
+      "label": "java: run",
+      "type": "shell",
+      "command": "java",
+      "args": [
+        "-cp",
+        "target/classes",
+        "u4pp.Main"
+      ],
+      "group": "test",
+      "problemMatcher": []
+    }
+  ]
+}
+
+
+
+

@@ -1,3 +1,21 @@
 {
-    "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic",
+  "java.errors.incompleteClasspath.severity": "warning",
+  "java.configuration.runtimes": [],
+  "java.configuration.maven.userSettings": null,
+  "java.import.maven.enabled": true,
+  "java.clean.workspace": false,
+  "java.sources.organizeImports.starThreshold": 99,
+  "java.sources.organizeImports.staticStarThreshold": 99,
+  "java.test.config": {
+    "workingDirectory": "${workspaceFolder}"
+  },
+  "java.test.defaultConfig": "",
+  "files.exclude": {
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true
+  }
 }

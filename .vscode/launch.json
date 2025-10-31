@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Run Main",
+      "request": "launch",
+      "mainClass": "u4pp.Main",
+      "projectName": "u4pp",
+      "args": "",
+      "vmArgs": "",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "sourcePaths": [
+        "${workspaceFolder}/src/main/java"
+      ]
+    },
+    {
+      "type": "java",
+      "name": "Current File",
+      "request": "launch",
+      "mainClass": "${file}"
+    }
+  ]
+}
