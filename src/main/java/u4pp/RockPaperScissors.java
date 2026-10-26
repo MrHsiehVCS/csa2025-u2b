@@ -31,7 +31,7 @@ public class RockPaperScissors {
      * 1. getRandomChoice() - returns a random "r", "p", or "s"
      * 2. getPlayerChoice(Scanner sc) - prompts user and returns valid R/P/S/A input
      * 3. getYesNoInput(Scanner sc, String prompt) - prompts user and returns true/false for Y/N
-     * 4. playRound(Scanner sc, int[] scores) - handles one complete round of RPS
+     * 4. int playRound(Scanner sc) - handles one complete round of RPS, returning win/loss/tie as an int
      * 5. formatChoice(String choice) - converts "r" to "Rock", "p" to "Paper", etc.
      */
 }
