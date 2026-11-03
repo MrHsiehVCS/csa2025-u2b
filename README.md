@@ -109,7 +109,7 @@ The sample output includes player input.
 ```java
 Welcome to Rock Paper Scissors
 Would you like to pick (R)ock, (P)aper, (S)cissors, or (A)ny: r
-You both picked Rock. Its a tie!
+You both picked Rock. It's a tie!
 You have 0 wins and 0 losses and 1 ties
 Would you like to play again? (Y)es or (N)o: y
 Would you like to pick (R)ock, (P)aper, (S)cissors, or (A)ny: a
