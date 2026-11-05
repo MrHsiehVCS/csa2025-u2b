@@ -131,30 +131,4 @@ public class RockPaperScissorsTests {
             assertTrue(foundInvalidInput, "Should display 'Invalid Input' when user enters invalid Y/N choice");
         });
     }
-
-    @Test
-    void results_withUppercaseInputs_returnsCorrectValues() {
-        assertEquals(-1, RockPaperScissors.results("R", "P"));
-        assertEquals(0, RockPaperScissors.results("R", "R"));
-        assertEquals(1, RockPaperScissors.results("R", "S"));
-        assertEquals(-1, RockPaperScissors.results("S", "R"));
-        assertEquals(0, RockPaperScissors.results("S", "S"));
-        assertEquals(1, RockPaperScissors.results("S", "P"));
-        assertEquals(-1, RockPaperScissors.results("P", "S"));
-        assertEquals(0, RockPaperScissors.results("P", "P"));
-        assertEquals(1, RockPaperScissors.results("P", "R"));
-    }
-
-    @Test
-    void results_withLowercaseInputs_returnsCorrectValues() {
-        assertEquals(-1, RockPaperScissors.results("r", "p"));
-        assertEquals(0, RockPaperScissors.results("r", "r"));
-        assertEquals(1, RockPaperScissors.results("r", "s"));
-        assertEquals(-1, RockPaperScissors.results("s", "r"));
-        assertEquals(0, RockPaperScissors.results("s", "s"));
-        assertEquals(1, RockPaperScissors.results("s", "p"));
-        assertEquals(-1, RockPaperScissors.results("p", "s"));
-        assertEquals(0, RockPaperScissors.results("p", "p"));
-        assertEquals(1, RockPaperScissors.results("p", "r"));
-    }
 }

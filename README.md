@@ -64,7 +64,19 @@ Every class also gets a JavaDoc comment above it, like the one above `TipCalcula
 
 The method `results` should accept player and computer input (`"R"`, `"P"` or `"S"`, lowercase or capital), and return an integer: `1` if the player wins, `0` if it is a tie, and `-1` if the player loses.
 
-This part has one test - `doesRockPaperScissorLogicCorrectly`
+For example, `results("R", "S")` returns `1` (Rock beats Scissors), `results("p", "S")` returns `-1` (Scissors beats Paper), and `results("s", "S")` returns `0`. The first parameter is always the player's pick.
+
+This part has **5 tests**, in the **Part A - results** group of the Testing panel:
+
+| Test | What it checks |
+|---|---|
+| returns 1 when the player wins (capital letters) | `R` vs `S`, `P` vs `R`, `S` vs `P` all return `1` |
+| returns -1 when the player loses (capital letters) | `R` vs `P`, `P` vs `S`, `S` vs `R` all return `-1` |
+| returns 0 when both pick the same (capital letters) | `R` vs `R`, `P` vs `P`, `S` vs `S` all return `0` |
+| works the same with lowercase letters (all 9 pairs) | the same 9 pairs typed in lowercase, such as `"r"` vs `"s"` |
+| works the same with a mix of lowercase and capital letters | one pick lowercase and the other capital, such as `"r"` vs `"P"` |
+
+When a test fails, its message shows the call, what it should return, what your code returned, and a likely cause.
 
 ## PART B - RockPaperScissors.java
 
