@@ -210,9 +210,28 @@ Hint:
 
 For **PART C**, you need to complete the class `PalindromeTester`. The class tests whether or not a given `String` from the user is a palindrome.
 
-For the sake of this project, a palindrome is defined as a `String` that reads the same forward and backwards when spaces, numbers, punctuation, and capitalization are all ignored.
+For this project, a palindrome is a `String` that reads the same forwards and backwards when you look **only at its letters** and **ignore capitalization**. Spaces, numbers, punctuation, and other symbols are all ignored. A phrase that is empty or has no letters at all (like `""` or `"!! 123 321 !!"`) **counts as a palindrome**, so `isPalindrome` returns `true` for it.
 
-The method `isPalindrome` should take in a string and return a boolean for whether or not the string is a palindrome, as defined in the paragraph above. The input string could have any number of spaces, punctuation, etc. Finishing this function should clear up 10 tests - all the ones starting with `isPalindrome_whenCalledWith...`.
+For example, `isPalindrome("raCecAr")` and `isPalindrome("taco cat!")` return `true`, and `isPalindrome("abca")` returns `false`.
+
+The method `isPalindrome` should take in a string and return a boolean for whether or not the string is a palindrome, as defined above. The input string could have any number of spaces, punctuation, etc.
+
+`isPalindrome` has **10 tests**, in the **Part C - isPalindrome** group of the Testing panel:
+
+| Test | What it checks |
+|---|---|
+| returns true for an odd-length palindrome in capital letters | `"XYZYX"` |
+| returns true for an even-length palindrome in capital letters | `"QWERREWQ"` |
+| returns true for an odd-length palindrome in lowercase letters | `"abcdcba"` |
+| returns true for an even-length palindrome in lowercase letters | `"abccba"` |
+| returns true for a long palindrome | a 72-letter palindrome |
+| ignores capitalization | `"NeveroddorEven"` and `"raCecAr"` |
+| ignores numbers, spaces, and symbols | `"r98123 ace  137&&109c 00ar"` and `"taco cat!"` |
+| returns false for phrases that are not palindromes | `"thisISnoTApalindrome"`, `"thi@@isIsNot       a Palindrome"`, and `"abca"` |
+| returns true for an empty phrase or a phrase with no letters | `""` and `"!! 123 321 !!"` |
+| is fast enough on a very long palindrome (performance) | a 26,624-letter palindrome |
+
+When a test fails, its message shows the phrase (shortened if it is long), what `isPalindrome` should return, what your code returned, and a likely cause.
 
 After finishing `isPalindrome`, you will work on `execute()`. You should continually prompt the user for words to test until the user chooses to stop. Your output should look like the **Sample Run** below.
 
