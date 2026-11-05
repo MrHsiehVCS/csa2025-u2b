@@ -1,4 +1,4 @@
-package u4pp;
+package u2bpp;
 
 /**
 * JAVADOC HERE
@@ -21,6 +21,7 @@ public class RockPaperScissors {
      */
     public static int results(String playerChoice, String computerChoice) {
         /* PART A: YOUR CODE HERE */
+        throw new UnsupportedOperationException("TODO: results is not written yet - delete this line and write your code");
     }
 
     /* 

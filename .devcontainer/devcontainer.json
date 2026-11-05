@@ -1,0 +1,20 @@
+{
+  "name": "Unit 2b (Java 21)",
+  // Java version: keep in sync with maven.compiler.release in pom.xml
+  "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "none",
+      "installMaven": "true",
+      "installGradle": "false"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack"
+      ]
+    }
+  },
+  "postCreateCommand": "mvn -q -DskipTests test-compile"
+}

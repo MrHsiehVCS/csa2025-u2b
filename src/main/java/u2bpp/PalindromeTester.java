@@ -1,4 +1,4 @@
-package u4pp;
+package u2bpp;
 /**
 * YOUR COMMENTS HERE
 */
@@ -17,6 +17,7 @@ public class PalindromeTester {
      */
     public static boolean isPalindrome(String phrase) {
         /* YOUR CODE HERE */
+        throw new UnsupportedOperationException("TODO: isPalindrome is not written yet - delete this line and write your code");
     }
 
     /* Any helper methods you might need */

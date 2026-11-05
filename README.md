@@ -2,6 +2,19 @@
 
 For this project, you will be completing the code for two classes: `RockPaperScissors` and `PalindromeTester`. Each of these classes have some code that has already been written for you. You should not change any of the provided code. Instead, you should add in your own code in order to fulfill the project requirements. You will also need to JavaDoc all your classes.
 
+## About the starter code
+
+- **It compiles.** A method that promises to return a value (like `results`, which returns an `int`) won't compile unless it returns something. So instead of being left blank, `results` and `isPalindrome` start with this line:
+
+  ```java
+  throw new UnsupportedOperationException("TODO: ... delete this line and write your code");
+  ```
+
+  That line lets the project compile and run before you've written anything. `play` and `execute` don't return a value, so they are simply empty.
+- **Every test starts red.** Since the starter methods don't do anything yet, every test fails at first. If you run a test on `results` or `isPalindrome` now, it fails with that "not written yet" message. This is expected, not a broken project. A test only turns green when your code makes it pass.
+- **Delete the `throw` line** when you start writing a method, then write your code in its place.
+- To try your code by hand, open `Main.java` and uncomment **one** block at a time.
+
 ## Part A - RockPaperScissors.java - results()
 
 The method `results` should accept player and computer input (`"R"`, `"P"` or `"S"`, lowercase or capital), and return an integer: `1` if the player wins, `0` if it is a tie, and `-1` if the player loses.

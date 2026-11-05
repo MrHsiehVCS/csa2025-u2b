@@ -1,4 +1,4 @@
-package u4pp;
+package u2bpp;
 
 import static com.github.stefanbirkner.systemlambda.SystemLambda.*;
 import org.junit.jupiter.api.Test;
