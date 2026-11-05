@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="u2bpp.PartATests" time="0.1" tests="5" errors="0" skipped="0" failures="2">
+  <testcase name="playerWinsWithCapitalLetters" classname="u2bpp.PartATests" time="0.01"/>
+  <testcase name="playerLosesWithCapitalLetters" classname="u2bpp.PartATests" time="0.01"/>
+  <testcase name="mixedLowercaseAndCapitalLetters" classname="u2bpp.PartATests" time="0.01"/>
+  <testcase name="tieWithCapitalLetters" classname="u2bpp.PartATests" time="0.01">
+    <failure message="fixture failure" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: fixture failure]]></failure>
+  </testcase>
+  <testcase name="allPairsWithLowercaseLetters" classname="u2bpp.PartATests" time="0.01">
+    <failure message="fixture failure" type="org.opentest4j.AssertionFailedError"><![CDATA[org.opentest4j.AssertionFailedError: fixture failure]]></failure>
+  </testcase>
+</testsuite>

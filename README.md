@@ -320,13 +320,37 @@ Keep testing? (Y)es or (N)o: N
 
 ## Grading Breakdown
 
-- Code compiles & runs without errors: 2 pts
+**Graded by your teacher/TAs (10 points):**
+
+- Code compiles & runs without errors: 2 points
 - Formatting/indentation: 2 points
 - All code commented (JavaDoc on every class and method, like the example in [How to write a method](#how-to-write-a-method)): 2 points
-- No public methods/attributes besides the ones specified: 2 point
+- No public methods/attributes besides the ones specified: 2 points
 - All code is DRY (Don't repeat yourself): 2 points (copying `getYesNoInput` into `PalindromeTester` is expected and doesn't count against you)
-- Passes all test cases: 20 points (20 tests, so 1pt/test)
-Total: 30 points
+
+**Test score (20 points), worked out per part:**
+
+| Part | Tests | Points |
+|---|---|---|
+| Part A - results | 5 | 2 |
+| Part B - play | 13 | 11 |
+| Part C - isPalindrome | 10 | 4 |
+| Part C - execute | 7 | 3 |
+| **Total** | **35** | **20** |
+
+For each part, you earn that part's points times the fraction of its tests you pass, rounded to a whole number (halves round up). For example, passing 10 of the 13 Part B tests earns 11 × 10/13 = 8.46, so **8 points**.
+
+**Total: 30 points**
+
+### Check your score
+
+In the Codespace terminal, from the project folder, run:
+
+```text
+python3 grading/score.py
+```
+
+It runs all the tests and prints your test score for each part and in total, the same way your teacher and TAs score it. If your code doesn't compile, it shows the compile errors and a test score of 0. Don't edit the test files: you are graded with the official tests.
 
 
 ## Extra Credit

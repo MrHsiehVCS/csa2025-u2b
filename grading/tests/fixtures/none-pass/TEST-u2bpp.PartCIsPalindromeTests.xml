@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="u2bpp.PartCIsPalindromeTests" time="0.1" tests="10" errors="10" skipped="0" failures="0">
+  <testcase name="oddLengthPalindromeInCapitalLetters" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+  <testcase name="oddLengthPalindromeInLowercaseLetters" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+  <testcase name="longPalindrome" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+  <testcase name="emptyOrLettersFreePhraseIsAPalindrome" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+  <testcase name="ignoresNumbersSpacesAndSymbols" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+  <testcase name="evenLengthPalindromeInLowercaseLetters" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+  <testcase name="returnsFalseForNonPalindromes" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+  <testcase name="evenLengthPalindromeInCapitalLetters" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+  <testcase name="fastEnoughOnAVeryLongPalindrome" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+  <testcase name="ignoresCapitalization" classname="u2bpp.PartCIsPalindromeTests" time="0.01">
+    <error message="fixture error" type="java.lang.UnsupportedOperationException"><![CDATA[java.lang.UnsupportedOperationException: fixture error]]></error>
+  </testcase>
+</testsuite>

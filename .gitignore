@@ -24,3 +24,6 @@ hs_err_pid*
 
 # target files
 /target
+
+# Python cache
+__pycache__/
