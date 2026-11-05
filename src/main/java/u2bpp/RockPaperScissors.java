@@ -7,13 +7,22 @@ import java.util.Scanner;
 
 public class RockPaperScissors {
 
-    /* any code you need here for part b */
-
     /**
      * JAVADOC HERE
      */
     public static void play(Scanner sc) {
-        /* PART B: YOUR CODE HERE */
+        /* PART B: YOUR CODE HERE
+         * Follow the Output rules in the README exactly. The two prompts use print (each ends with ": "):
+         *   "Would you like to pick (R)ock, (P)aper, (S)cissors, or (A)ny: "
+         *   "Would you like to play again? (Y)es or (N)o: "
+         * Every other message uses println:
+         *   "Welcome to Rock Paper Scissors"
+         *   "You both picked Rock. It's a tie!"
+         *   "You picked Rock, and the Computer picked Paper. You lose!"
+         *   "You have 0 wins and 1 losses and 1 ties"
+         *   "Invalid input, please try again"
+         *   "Thanks for playing!"
+         */
     }
 
     /**
@@ -27,15 +36,14 @@ public class RockPaperScissors {
         throw new UnsupportedOperationException("TODO: results is not written yet - delete this line and write your code");
     }
 
-    /* 
-     * Helper methods for part b
-     * These should be private static methods that help organize your code
-     * 
-     * Recommended helper methods:
-     * 1. getRandomChoice() - returns a random "r", "p", or "s"
-     * 2. getPlayerChoice(Scanner sc) - prompts user and returns valid R/P/S/A input
-     * 3. getYesNoInput(Scanner sc, String prompt) - prompts user and returns true/false for Y/N
-     * 4. int playRound(Scanner sc) - handles one complete round of RPS, returning win/loss/tie as an int
-     * 5. formatChoice(String choice) - converts "r" to "Rock", "p" to "Paper", etc.
+    /*
+     * Helper methods for Part B go here. Make each one private static and give it a JavaDoc comment.
+     *
+     * Recommended helper methods (see the README for details):
+     * 1. String getRandomChoice() - returns a random "r", "p", or "s"
+     * 2. String getPlayerChoice(Scanner sc) - prompts until the player types R, P, S or A; returns "r", "p", "s" or "a"
+     * 3. boolean getYesNoInput(Scanner sc, String prompt) - prompts until the player types Y or N; returns true for yes
+     * 4. int playRound(Scanner sc) - plays one round and prints its result line; returns 1 (win), 0 (tie) or -1 (loss)
+     * 5. String formatChoice(String choice) - turns "r" into "Rock", "p" into "Paper", and "s" into "Scissors"
      */
 }
