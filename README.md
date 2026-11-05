@@ -15,6 +15,51 @@ For this project, you will be completing the code for two classes: `RockPaperSci
 - **Delete the `throw` line** when you start writing a method, then write your code in its place.
 - To try your code by hand, open `Main.java` and uncomment **one** block at a time.
 
+## How to write a method
+
+You will learn about writing methods next unit, but this project asks you to write a few small **helper methods** now. Here is a fully worked example that has nothing to do with this project, so you can see every piece. Copy the *shape* of it, not the code.
+
+```java
+/**
+ * A small program that works out the tip on a restaurant bill.
+ */
+public class TipCalculator {
+
+    public static void main(String[] args) {
+        double tip = calculateTip(40.0, 15);   // call the method; the answer comes back into tip
+        System.out.println("Tip: $" + tip);    // prints Tip: $6.0
+    }
+
+    /**
+     * Calculates the tip for a bill.
+     *
+     * @param bill    the total of the bill, in dollars
+     * @param percent the tip percentage, such as 15 for 15%
+     * @return the tip amount, in dollars
+     */
+    private static double calculateTip(double bill, int percent) {
+        double tip = bill * percent / 100.0;
+        return tip;
+    }
+}
+```
+
+The parts of the method:
+
+- **`private static`** - write this at the start of every helper method in this project. `private` means only this class can use it (so it doesn't count as an extra public method), and `static` means you call it without making an object.
+- **`double`** - the *return type*: what kind of value the method gives back. Use `int`, `boolean`, `String`, etc. as needed, or `void` if the method only prints and gives nothing back.
+- **`calculateTip`** - the method's name. Start with a verb and use camelCase.
+- **`(double bill, int percent)`** - the *parameters*: values the method needs, each with a type and a name. Use `()` if it needs none.
+- **`return tip;`** - sends the answer back to whoever called the method. A non-`void` method must always reach a `return`.
+- **The call** `calculateTip(40.0, 15)` - runs the method with `bill = 40.0` and `percent = 15`, and the call is replaced by the returned value.
+
+**JavaDoc** is the `/** ... */` comment right above a class or method. This is the commenting the rubric expects. For every method, write one sentence saying what it does, then:
+
+- one `@param name description` line for **each** parameter (skip if there are none), and
+- one `@return description` line saying what it gives back (skip for `void` methods).
+
+Every class also gets a JavaDoc comment above it, like the one above `TipCalculator`.
+
 ## Part A - RockPaperScissors.java - results()
 
 The method `results` should accept player and computer input (`"R"`, `"P"` or `"S"`, lowercase or capital), and return an integer: `1` if the player wins, `0` if it is a tie, and `-1` if the player loses.
@@ -211,7 +256,7 @@ Keep testing? (Y)es or (N)o: N
 
 - Code compiles & runs without errors: 2 pts
 - Formatting/indentation: 2 points
-- All code commented: 2 points
+- All code commented (JavaDoc on every class and method, like the example in [How to write a method](#how-to-write-a-method)): 2 points
 - No public methods/attributes besides the ones specified: 2 point
 - All code is DRY (Don't repeat yourself): 2 points
 - Passes all test cases: 20 points (20 tests, so 1pt/test)
@@ -219,4 +264,9 @@ Total: 30 points
 
 
 ## Extra Credit
-- make your RPS computer AI smarter.
+
+Finished early? Try one or more of these. **Extra credit does not affect your test score** - it can't raise or lower your test points - and your required work must still pass every test. Each one only needs things you've already learned (variables, `String` methods, `Math.random`, `if`/`else`, and loops; no arrays).
+
+1. **A smarter computer.** In `RockPaperScissors`, use three counters to keep track of how many times the player has picked Rock, Paper, and Scissors. Each round, have the computer pick the move that *beats* the player's most common pick so far (pick randomly if there's a tie or no picks yet). Keep the printed output exactly the same, so the tests still pass.
+2. **Rock Paper Scissors Lizard Spock.** In a **new** class (for example `RockPaperScissorsLizardSpock.java`), write a version of the game with the two extra moves: Scissors cuts Paper, Paper covers Rock, Rock crushes Lizard, Lizard poisons Spock, Spock smashes Scissors, Scissors decapitates Lizard, Lizard eats Paper, Paper disproves Spock, Spock vaporizes Rock, and Rock crushes Scissors. Try it from `Main.java`. Keep it in its own class so `RockPaperScissors` still passes its tests.
+3. **Palindrome finder.** In a **new** class, write a method that takes a phrase and prints the longest piece of it (a substring) that is a palindrome, using nested loops and `substring`. For example, in `"my racecar is fast"` the longest palindrome piece is `"racecar"`. You can reuse your `isPalindrome` method to check each piece.
