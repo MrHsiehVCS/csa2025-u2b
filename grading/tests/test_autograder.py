@@ -26,6 +26,7 @@ import sync_classroom50  # noqa: E402
 
 REPO = GRADING.parent
 OFFICIAL_JAVA = REPO / "src" / "test" / "java"
+OFFICIAL_POM = REPO / "pom.xml"
 FIXTURES = Path(__file__).resolve().parent / "fixtures"
 REQUIRED = ["schema", "classroom", "assignment", "submission", "commit", "release", "review",
             "datetime", "score", "max-score", "tests"]
@@ -74,15 +75,18 @@ class AutograderTestBase(unittest.TestCase):
         tmp = tempfile.TemporaryDirectory()
         self.addCleanup(tmp.cleanup)
         self.tmp = Path(tmp.name)
-        # The bundle as Classroom50 serves it: autograder.py, score.py, official-tests/.
+        # The bundle as Classroom50 serves it: autograder.py, score.py, official-tests/,
+        # official-pom.xml.
         self.bundle = self.tmp / "config" / "csa" / "autograders" / "csa2025-u2b"
         self.bundle.mkdir(parents=True)
         for name in ("autograder.py", "score.py"):
             shutil.copy(GRADING / name, self.bundle / name)
         shutil.copytree(OFFICIAL_JAVA, self.bundle / "official-tests")
-        # A student checkout whose tests start identical to the official ones.
+        shutil.copy(OFFICIAL_POM, self.bundle / "official-pom.xml")
+        # A student checkout whose tests and pom start identical to the official ones.
         self.repo = self.tmp / "student"
         shutil.copytree(OFFICIAL_JAVA, self.repo / "src" / "test" / "java")
+        shutil.copy(OFFICIAL_POM, self.repo / "pom.xml")
         self.mvn = self.tmp / "mvn"
         self.mvn.write_text(FAKE_MVN.format(python=sys.executable))
         self.mvn.chmod(0o755)
@@ -147,6 +151,70 @@ class TestFileTests(AutograderTestBase):
         self.assertEqual(len([n for n in report.notes if "deleted:" in n]),
                          len(list((OFFICIAL_JAVA / "u2bpp").glob("*.java"))))
 
+    def test_symlinked_test_folder_is_replaced_not_followed(self):
+        elsewhere = self.tmp / "elsewhere"
+        shutil.copytree(self.repo / "src" / "test", elsewhere)
+        (elsewhere / "java" / "u2bpp" / "PartATests.java").write_text("// fake\n")
+        shutil.rmtree(self.repo / "src" / "test")
+        (self.repo / "src" / "test").symlink_to(elsewhere, target_is_directory=True)
+        report, result = self.run_autograder()
+        self.assertEqual(result["score"], 20)
+        self.assertIn("  added: src/test", report.notes)
+        self.assertFalse((self.repo / "src" / "test").is_symlink())
+        self.assertTrue(self.student_test("PartATests.java").is_file())
+        self.assertEqual((elsewhere / "java" / "u2bpp" / "PartATests.java").read_text(),
+                         "// fake\n")  # the link target is untouched
+
+    def test_symlinked_java_folder_is_replaced_not_followed(self):
+        elsewhere = self.tmp / "elsewhere"
+        shutil.move(str(self.repo / "src" / "test" / "java"), elsewhere)
+        (self.repo / "src" / "test" / "java").symlink_to(elsewhere, target_is_directory=True)
+        report, result = self.run_autograder()
+        self.assertEqual(result["score"], 20)
+        self.assertIn("  added: src/test/java", report.notes)
+        self.assertFalse((self.repo / "src" / "test" / "java").is_symlink())
+        self.assertTrue((elsewhere / "u2bpp" / "PartATests.java").is_file())
+
+    def test_symlinked_test_file_is_flagged(self):
+        target = self.tmp / "PartATests.java"
+        shutil.copy(self.student_test("PartATests.java"), target)
+        self.student_test("PartATests.java").unlink()
+        self.student_test("PartATests.java").symlink_to(target)
+        report, _ = self.run_autograder()
+        self.assertIn("  changed: src/test/java/u2bpp/PartATests.java", report.notes)
+        self.assertFalse(self.student_test("PartATests.java").is_symlink())
+
+    def test_symlinked_target_and_outputs_are_not_written_through(self):
+        outside = self.tmp / "outside"
+        (outside / "keep").mkdir(parents=True)
+        (self.repo / "target").symlink_to(outside / "keep", target_is_directory=True)
+        (self.repo / "result.json").symlink_to(outside / "result.json")
+        (outside / "result.json").write_text("not yours\n")
+        _, result = self.run_autograder()
+        self.assertEqual(result["score"], 20)
+        self.assertTrue((outside / "keep").is_dir())
+        self.assertEqual((outside / "result.json").read_text(), "not yours\n")
+        self.assertFalse((self.repo / "result.json").is_symlink())
+
+    def test_symlinked_src_is_a_graded_zero_with_a_note(self):
+        elsewhere = self.tmp / "elsewhere"
+        shutil.move(str(self.repo / "src"), elsewhere)
+        (self.repo / "src").symlink_to(elsewhere, target_is_directory=True)
+        report, result = self.run_autograder()
+        assert_valid_result(self, result)
+        self.assertEqual(result["score"], 0)
+        self.assertTrue(any("src is a symbolic link" in n for n in report.notes))
+        self.assertTrue((elsewhere / "test" / "java" / "u2bpp" / "PartATests.java").is_file())
+
+    def test_install_error_is_a_graded_zero_not_a_crash(self):
+        with mock.patch.object(autograder.shutil, "copytree", side_effect=OSError("disk full")):
+            report, result = self.run_autograder()
+        assert_valid_result(self, result)
+        self.assertEqual(result["score"], 0)
+        self.assertTrue(any("Could not grade this repository" in n and "disk full" in n
+                            for n in report.notes))
+        self.assertTrue((self.repo / "result.json").is_file())
+
     def test_warning_shows_in_release_body_and_summary(self):
         self.student_test("PartATests.java").write_text("changed\n")
         out = self.tmp / "github_output"
@@ -156,8 +224,71 @@ class TestFileTests(AutograderTestBase):
         self.assertIn("| Part B - play | 13 / 13 | 11 / 11 |", body)
         self.assertIn("## Test score: 20 / 20", body)
         self.assertEqual(out.read_text(encoding="utf-8"),
-                         "summary=Test score: 20/20 (test files differed from the official "
-                         "ones; graded with the official tests)\n")
+                         "summary=Test score: 20/20 (test or build files differed from the "
+                         "official ones; graded with the official copies)\n")
+
+
+class BuildFileTests(AutograderTestBase):
+    def test_changed_pom_warns_and_official_pom_is_used(self):
+        (self.repo / "pom.xml").write_text("<project><!-- skip the tests --></project>\n")
+        report, _ = self.run_autograder()
+        self.assertEqual(report.notes, [autograder.DIFFER_WARNING, "  changed: pom.xml"])
+        self.assertEqual((self.repo / "pom.xml").read_bytes(), OFFICIAL_POM.read_bytes())
+
+    def test_deleted_pom_warns_and_is_restored(self):
+        (self.repo / "pom.xml").unlink()
+        report, _ = self.run_autograder()
+        self.assertIn("  deleted: pom.xml", report.notes)
+        self.assertEqual((self.repo / "pom.xml").read_bytes(), OFFICIAL_POM.read_bytes())
+
+    def test_symlinked_pom_warns_and_is_replaced(self):
+        target = self.tmp / "my-pom.xml"
+        shutil.move(str(self.repo / "pom.xml"), target)
+        (self.repo / "pom.xml").symlink_to(target)
+        report, _ = self.run_autograder()
+        self.assertIn("  changed: pom.xml", report.notes)
+        self.assertFalse((self.repo / "pom.xml").is_symlink())
+
+    def test_maven_wrapper_and_settings_are_removed_and_never_run(self):
+        marker = self.tmp / "wrapper-ran"
+        for name in ("mvnw", "mvnw.cmd"):
+            wrapper = self.repo / name
+            wrapper.write_text(f"#!/bin/sh\ntouch {marker}\n")
+            wrapper.chmod(0o755)
+        (self.repo / ".mvn").mkdir()
+        (self.repo / ".mvn" / "maven.config").write_text("-Dmaven.test.skip=true\n")
+        # No --mvn: the autograder must find the runner's mvn, not the repo's mvnw.
+        with mock.patch("shutil.which", side_effect=lambda name: str(self.mvn)
+                        if name == "mvn" else None), \
+                mock.patch.dict(os.environ, self.env):
+            report, result = autograder.run(self.repo, self.bundle, env=self.env)
+        self.assertEqual(result["score"], 20)
+        self.assertFalse(marker.exists())
+        for name in ("mvnw", "mvnw.cmd", ".mvn"):
+            self.assertFalse((self.repo / name).exists(), name)
+        self.assertEqual(report.notes, [autograder.DIFFER_WARNING, "  added: .mvn/maven.config",
+                                        "  added: mvnw", "  added: mvnw.cmd"])
+
+    def test_bundle_without_official_pom_is_an_infrastructure_error(self):
+        (self.bundle / "official-pom.xml").unlink()
+        with self.assertRaises(autograder.InfrastructureError):
+            self.run_autograder()
+
+
+class BundleTests(AutograderTestBase):
+    def test_score_comes_from_the_bundle_in_use(self):
+        with open(self.bundle / "score.py", "a", encoding="utf-8") as fh:
+            fh.write('\nPARTS[0] = ("Part A - from the bundle", "u2bpp.PartATests", 2)\n')
+        out = io.StringIO()
+        with mock.patch.dict(os.environ, self.env), contextlib.redirect_stdout(out):
+            code = autograder.main(["--repo", str(self.repo), "--bundle", str(self.bundle),
+                                    "--mvn", str(self.mvn)])
+        self.assertEqual(code, 0)
+        self.assertIn("Part A - from the bundle", out.getvalue())
+        self.assertEqual(self.result_json()["tests"][0]["test-name"], "Part A - from the bundle")
+
+    def test_this_folder_reuses_the_imported_score(self):
+        self.assertIs(autograder.load_score(GRADING), score)
 
 
 class ResultTests(AutograderTestBase):
@@ -222,7 +353,7 @@ class ExitCodeTests(AutograderTestBase):
         self.assertIn("RockPaperScissors.java line 36", body)
 
     def test_maven_missing_is_an_infrastructure_error(self):
-        with mock.patch.object(score, "find_maven", return_value=None):
+        with mock.patch("shutil.which", return_value=None):
             err = io.StringIO()
             with contextlib.redirect_stderr(err):
                 code = autograder.main(["--repo", str(self.repo), "--bundle", str(self.bundle)])
@@ -257,13 +388,16 @@ class SyncTests(unittest.TestCase):
         self.assertEqual(code, 0)
         bundle = self.config / "csa-2025" / "autograders" / "csa2025-u2b"
         self.assertEqual(sorted(p.name for p in bundle.iterdir()),
-                         ["autograder.py", "bundle-info.json", "official-tests", "score.py"])
+                         ["autograder.py", "bundle-info.json", "official-pom.xml",
+                          "official-tests", "score.py"])
+        self.assertEqual((bundle / "official-pom.xml").read_bytes(), OFFICIAL_POM.read_bytes())
         self.assertEqual(autograder.list_files(bundle / "official-tests"),
                          autograder.list_files(OFFICIAL_JAVA))
         self.assertEqual((bundle / "score.py").read_bytes(), (GRADING / "score.py").read_bytes())
         info = json.loads((bundle / "bundle-info.json").read_text())
         self.assertEqual((info["classroom"], info["assignment"]), ("csa-2025", "csa2025-u2b"))
         self.assertIn("added: u2bpp/PartATests.java", out)
+        self.assertIn("added: pom.xml", out)
 
     def test_resync_reports_changes_and_removes_stale_tests(self):
         self.sync("--classroom", "csa-2025", "--assignment", "u2b")
@@ -271,11 +405,13 @@ class SyncTests(unittest.TestCase):
         (official / "u2bpp" / "Old.java").write_text("old\n")
         (official / "u2bpp" / "PartATests.java").write_text("edited\n")
         (official / "u2bpp" / "PartBTests.java").unlink()
+        (official.parent / "official-pom.xml").write_text("<project/>\n")
         code, out, _ = self.sync("--classroom", "csa-2025", "--assignment", "u2b")
         self.assertEqual(code, 0)
         self.assertIn("removed: u2bpp/Old.java", out)
         self.assertIn("changed: u2bpp/PartATests.java", out)
         self.assertIn("added: u2bpp/PartBTests.java", out)
+        self.assertIn("changed: pom.xml", out)
         self.assertFalse((official / "u2bpp" / "Old.java").exists())
         code, out, _ = self.sync("--classroom", "csa-2025", "--assignment", "u2b")
         self.assertIn("unchanged since the last sync", out)
@@ -300,6 +436,7 @@ class SyncTests(unittest.TestCase):
         bundle = self.config / "csa-2025" / "autograders" / "csa2025-u2b"
         student = Path(self.config).parent / "student"
         shutil.copytree(OFFICIAL_JAVA, student / "src" / "test" / "java")
+        shutil.copy(OFFICIAL_POM, student / "pom.xml")
         mvn = Path(self.config).parent / "mvn"
         mvn.write_text(FAKE_MVN.format(python=sys.executable))
         mvn.chmod(0o755)

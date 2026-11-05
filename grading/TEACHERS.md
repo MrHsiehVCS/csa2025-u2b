@@ -13,16 +13,25 @@ assignment and what to do when you change a test.
 - Students can run `python3 grading/score.py` in their Codespace and see the
   same numbers you will.
 - Classroom50 uses `autograder.py`, which:
-  1. compares the student's test files with the official copies,
-  2. replaces the student's test files with the official copies,
-  3. runs the tests and scores each part with `score.py`,
+  1. compares the student's test files and build files (`pom.xml`, `.mvn/`,
+     `mvnw`, `mvnw.cmd`) with the official copies,
+  2. replaces `src/test/` and `pom.xml` with the official copies and deletes
+     `.mvn/`, `mvnw` and `mvnw.cmd` (symbolic links are removed, never followed),
+  3. runs the tests with the runner's own `mvn` (never the repo's `mvnw`) and
+     scores each part with the bundle's `score.py`,
   4. writes the score (one row per part) and a short summary.
-- If a student's test files were different (edited, deleted, or extra files),
-  the summary starts with **"⚠ your test files differ from the official ones;
-  graded with the official tests"** and lists the files. The score is still
-  correct. This also shows up for every student if you changed a test and
-  forgot to push the change to student repos - that's harmless, but it's a
-  reminder.
+- If a student's test or build files were different (edited, deleted, or extra
+  files), the summary starts with **"⚠ your test or build files differ from
+  the official ones; graded with the official copies"** and lists the files.
+  The score is still correct. This also shows up for every student if you
+  changed a test or `pom.xml` and forgot to push the change to student repos -
+  that's harmless, but it's a reminder.
+- Every test has a 2-second time limit (the performance test: 10 seconds),
+  set in `pom.xml` and enforced from a separate thread, so an infinite loop
+  fails only the tests that hit it, with an "infinite loop" hint. Each test
+  class runs in its own JVM, so `System.exit` in student code costs only that
+  part; the summary says so. A checkout the official files can't be put into
+  (for example, `src` is a symbolic link) scores 0 with a note.
 - A student whose code doesn't compile gets 0 test points and a summary with
   the compile errors (this is a normal grade, not an error).
 - The hand-graded rubric items (compiles/runs, formatting, comments, DRY, no
@@ -36,6 +45,7 @@ assignment and what to do when you change a test.
    `CLASSROOM/autograders/csa2025-u2b/` in the config repo with:
    - `autograder.py` and `score.py` - the grading code,
    - `official-tests/` - a copy of this project's `src/test/java/`,
+   - `official-pom.xml` - a copy of this project's `pom.xml`,
    - `bundle-info.json` - the classroom and assignment names and when you synced.
 3. In the assignment's runtime settings, set **Java 21** (it must match
    `pom.xml` and the Codespace). Python: the default is fine; no extra packages
@@ -61,7 +71,8 @@ If the assignment folder in Classroom50 has a different name, pass it with
    ```
 
    `--classroom` can be left out if the config repo has only one classroom
-   folder. The command lists which test files were added, changed, or removed.
+   folder. The command lists which test files (and whether `pom.xml`) were
+   added, changed, or removed. Sync after changing `pom.xml` too.
 3. Commit and push the config repo.
 4. In Classroom50, click **Regrade all**. It re-runs every student's latest
    submission (at the commit they submitted) with the new tests.
@@ -83,6 +94,13 @@ If the assignment folder in Classroom50 has a different name, pass it with
   `python3 grading/score.py` yourself.
 - The autograder deletes the student's `target/` folder before running, so
   old compiled tests can't be reused.
+- Not covered by the ⚠ line: files the student adds under `src/main/` (for
+  example `src/main/resources/`). Student code runs inside the test JVM, so
+  it can always interfere in principle.
+- To try a bundle locally: `python3 PATH/TO/BUNDLE/autograder.py --repo
+  STUDENT_CHECKOUT` (add `--bundle DIR` to grade with another bundle).
+  The official tests, `official-pom.xml` and `score.py` all come from the
+  bundle folder, never from this project's `grading/`.
 
 ## To verify during the try-out (#11)
 

@@ -10,10 +10,11 @@ It (re)writes PATH/TO/CLASSROOM50-CONFIG/CLASSROOM/autograders/ASSIGNMENT/ with:
     autograder.py      grading/autograder.py
     score.py           grading/score.py
     official-tests/    a fresh copy of src/test/java/ (old copy removed first)
+    official-pom.xml   pom.xml (the autograder puts it back in place of the student's)
     bundle-info.json   classroom/assignment names and when this sync ran
 
 Other files already in that folder are left alone. It prints which test files
-were added, changed, or removed since the last sync. It does not commit or
+(and whether pom.xml) were added, changed, or removed since the last sync. It does not commit or
 push: do that yourself in the config repo, then use "Regrade all" if needed.
 
 Options:
@@ -59,10 +60,14 @@ def guess_classroom(config):
 
 def changes(old_dir, new_dir):
     """(added, changed, removed) file lists between two test folders."""
-    old, new = autograder.list_files(old_dir), autograder.list_files(new_dir)
-    changed = sorted(p for p in old & new
-                     if (Path(old_dir) / p).read_bytes() != (Path(new_dir) / p).read_bytes())
-    return sorted(new - old), changed, sorted(old - new)
+    return autograder.diff_trees(old_dir, new_dir)
+
+
+def pom_change(old_pom, new_pom):
+    """(added, changed, removed) for the bundle's pom copy, in the same shape as changes()."""
+    if not Path(old_pom).is_file():
+        return [autograder.POM], [], []
+    return [], ([] if autograder.same_file(old_pom, new_pom) else [autograder.POM]), []
 
 
 def source_commit(repo):
@@ -87,10 +92,14 @@ def sync(config, classroom=None, assignment=ASSIGNMENT_DEFAULT, repo=REPO, now=N
     bundle.mkdir(parents=True, exist_ok=True)
 
     official_dst = bundle / autograder.OFFICIAL_DIR
-    diff = changes(official_dst, official_src)
+    pom_src, pom_dst = repo / autograder.POM, bundle / autograder.OFFICIAL_POM
+    if not pom_src.is_file():
+        raise UsageError(f"No pom.xml found in {repo}")
+    diff = [a + b for a, b in zip(changes(official_dst, official_src), pom_change(pom_dst, pom_src))]
     shutil.rmtree(official_dst, ignore_errors=True)
     shutil.copytree(official_src, official_dst,
                     ignore=shutil.ignore_patterns(*autograder.IGNORED_NAMES))
+    shutil.copyfile(pom_src, pom_dst)
     for name in GRADING_FILES:
         shutil.copy2(repo / "grading" / name, bundle / name)
 
@@ -127,7 +136,7 @@ def main(argv=None):
             for p in paths:
                 print(f"  {label}: {p}")
     else:
-        print("  (test files unchanged since the last sync)")
+        print("  (test files and pom.xml unchanged since the last sync)")
     print("Next: commit and push the config repo. To re-score submissions already made, "
           "use Regrade all.")
     return 0
