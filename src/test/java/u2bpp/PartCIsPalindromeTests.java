@@ -10,9 +10,12 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 
 @DisplayName("Part C - isPalindrome")
+@ExtendWith(TimeLimitHint.class)
 class PartCIsPalindromeTests {
 
     private static final String CASE_HINT =
@@ -102,6 +105,7 @@ class PartCIsPalindromeTests {
 
     @Test
     @DisplayName("is fast enough on a very long palindrome (performance)")
+    @Timeout(PERFORMANCE_TIMEOUT_SECONDS + 5) // above the 10 s check below, which has the better message
     void fastEnoughOnAVeryLongPalindrome() {
         String input = "abcdefghijklmnopqrstuvwxyz";
         for (int i = 0; i < PERFORMANCE_DOUBLINGS; i++) {

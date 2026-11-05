@@ -350,7 +350,7 @@ In the Codespace terminal, from the project folder, run:
 python3 grading/score.py
 ```
 
-It runs all the tests and prints your test score for each part and in total, the same way your teacher and TAs score it. If your code doesn't compile, it shows the compile errors and a test score of 0. Don't edit the test files: you are graded with the official tests. (Teachers: grading setup notes are in [grading/TEACHERS.md](grading/TEACHERS.md).)
+It runs all the tests and prints your test score for each part and in total, the same way your teacher and TAs score it. If your code doesn't compile, it shows the compile errors and a test score of 0. Each test has a time limit of a few seconds, so an infinite loop fails only the tests that run into it. Don't call `System.exit` anywhere: it stops that part's tests, so they all score 0. Don't edit the test files: you are graded with the official tests. (Teachers: grading setup notes are in [grading/TEACHERS.md](grading/TEACHERS.md).)
 
 
 ## Extra Credit

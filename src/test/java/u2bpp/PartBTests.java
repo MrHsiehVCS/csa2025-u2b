@@ -15,13 +15,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Timeout;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /*
  * Part B tests. Each test checks one feature, so one missing feature fails only its own test:
@@ -34,7 +33,7 @@ import org.junit.jupiter.api.Timeout;
  *     computer picks show up (the chance of missing one is about 1 in 10 billion).
  */
 @DisplayName("Part B - play")
-@Timeout(value = 10, unit = TimeUnit.SECONDS)
+@ExtendWith(TimeLimitHint.class)
 class PartBTests {
 
     private static final String WELCOME = "Welcome to Rock Paper Scissors";

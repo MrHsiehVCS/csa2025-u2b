@@ -14,6 +14,7 @@ import java.util.Scanner;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 /*
  * These tests type lines into execute(sc) one at a time, the way a person would. Each typed line
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
  *     racecar is a palindrome
  */
 @DisplayName("Part C - execute")
+@ExtendWith(TimeLimitHint.class)
 class PartCExecuteTests {
 
     private static final String PHRASE_PROMPT = "Enter a phrase: ";

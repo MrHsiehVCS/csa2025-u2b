@@ -22,9 +22,11 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 
 @DisplayName("Part A - results")
+@ExtendWith(TimeLimitHint.class)
 class PartATests {
 
     private static final String CASE_HINT =
