@@ -233,7 +233,21 @@ The method `isPalindrome` should take in a string and return a boolean for wheth
 
 When a test fails, its message shows the phrase (shortened if it is long), what `isPalindrome` should return, what your code returned, and a likely cause.
 
-After finishing `isPalindrome`, you will work on `execute()`. You should continually prompt the user for words to test until the user chooses to stop. Your output should look like the **Sample Run** below.
+After finishing `isPalindrome`, you will work on `execute()`. You should continually prompt the user for phrases to test until the user chooses to stop. Your output should look exactly like the **Part C Sample Run** below.
+
+`execute` has **7 tests**, in the **Part C - execute** group of the Testing panel. They type input into your program one line at a time and show each typed line right after the prompt, just like on screen, so a failing test's output looks like the sample run.
+
+| Test | What it checks |
+|---|---|
+| matches the README sample run exactly | types the sample-run input and compares your whole output to the sample run, character for character |
+| prints prompts with print, so the typed answer is on the same line | `Enter a phrase: ` and `Keep testing? (Y)es or (N)o: ` use `print`, not `println` |
+| tests one phrase and stops when the user answers n | one phrase, then `n`: the program asks for a phrase only once |
+| keeps asking for phrases until the user answers n | `y` and `Y` keep going; `N` stops |
+| says "&lt;phrase&gt; is a palindrome" for a palindrome | `racecar` prints `racecar is a palindrome` |
+| says "&lt;phrase&gt; is not a palindrome", showing the phrase exactly as typed | `Hello, World!` prints `Hello, World! is not a palindrome` (not a lowercase or filtered copy) |
+| re-asks "Keep testing?" after an invalid answer | any answer other than Y/y/N/n prints `Invalid input, please try again` and asks again |
+
+When a test fails, its message says what it expected, what your program printed, and a likely cause. The sample-run test shows the first line that differs.
 
 ### PART C - Code Structure and Helper Functions
 
@@ -246,6 +260,7 @@ Similar to PART B, you should break down your `execute()` method into smaller he
    - Should validate input and loop until valid
    - Should return `true` for yes, `false` for no
    - Same pattern you used in RockPaperScissors - you can copy that helper method here!
+   - **Copying `getYesNoInput` from `RockPaperScissors` into `PalindromeTester` is expected and does not cost you DRY points.** You haven't learned how to share one method between two classes yet. DRY is about not repeating code *inside* a class.
 
 2. **Helper methods for `isPalindrome()`** - Break down the palindrome checking logic
    - Consider creating a method that filters/processes the string (removes spaces, punctuation, etc.)
@@ -268,12 +283,14 @@ The main `execute()` method should:
 
 ### Part C Sample Run
 
-```java
+The text after each prompt is what the user typed.
+
+```text
 Welcome to Palindrome Tester
 Enter a phrase: racecar
 racecar is a palindrome
 Keep testing? (Y)es or (N)o: asdfhsa;g
-Invalid Input, please try again
+Invalid input, please try again
 Keep testing? (Y)es or (N)o: Y
 Enter a phrase: ra^124c8098  eCA@R
 ra^124c8098  eCA@R is a palindrome
@@ -289,7 +306,7 @@ Keep testing? (Y)es or (N)o: N
 - Formatting/indentation: 2 points
 - All code commented (JavaDoc on every class and method, like the example in [How to write a method](#how-to-write-a-method)): 2 points
 - No public methods/attributes besides the ones specified: 2 point
-- All code is DRY (Don't repeat yourself): 2 points
+- All code is DRY (Don't repeat yourself): 2 points (copying `getYesNoInput` into `PalindromeTester` is expected and doesn't count against you)
 - Passes all test cases: 20 points (20 tests, so 1pt/test)
 Total: 30 points
 
