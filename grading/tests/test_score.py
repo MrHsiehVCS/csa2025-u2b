@@ -11,6 +11,7 @@ import shutil
 import sys
 import tempfile
 import textwrap
+import time
 import unittest
 from pathlib import Path
 from unittest import mock
@@ -111,6 +112,10 @@ class ScoringTests(unittest.TestCase):
         self.assertEqual((report.score, report.max_score), (0, 20))
         self.assertIn("No test reports were found", report.notes[0])
 
+    def test_report_totals(self):
+        report = score_fixture("partial")
+        self.assertEqual((report.passed, report.total), (22, 35))
+
     def test_broken_report_file_is_skipped(self):
         with tempfile.TemporaryDirectory() as tmp:
             shutil.copy(FIXTURES / "all-pass" / "TEST-u2bpp.PartATests.xml", tmp)
@@ -200,6 +205,56 @@ class MavenRunTests(unittest.TestCase):
         report = self.grade(FAKE_MVN_RC="1", FAKE_MVN_REPORTS=str(FIXTURES / "part-missing"))
         self.assertEqual(report.score, 16)
         self.assertIn("build problem", report.notes[0])
+
+    def test_system_exit_costs_only_its_part_with_clear_message(self):
+        fixture = FIXTURES / "system-exit"
+        report = self.grade(FAKE_MVN_RC="1", FAKE_MVN_OUTPUT=str(fixture / "maven-output.txt"),
+                            FAKE_MVN_REPORTS=str(fixture))
+        self.assertEqual(points(report)["Part B - play"], (0, 0, 0, 11))
+        self.assertEqual(report.score, 2 + 4 + 3)
+        self.assertEqual(len(report.notes), 1, report.notes)
+        self.assertTrue(report.notes[0].startswith("Part B - play: "))
+        self.assertIn("your code called System.exit", report.notes[0])
+        self.assertIn("Remove System.exit", report.notes[0])
+
+    def test_crashed_classes_parsing(self):
+        output = (FIXTURES / "system-exit" / "maven-output.txt").read_text()
+        self.assertEqual(score._crashed_classes(output), ["u2bpp.PartBTests"])
+        self.assertEqual(score._crashed_classes("[ERROR] Crashed tests:\n[ERROR] u2bpp.X\n"), [])
+
+    def test_timeout_kills_maven_and_its_children(self):
+        # A "Maven" that starts a child holding the output pipe, then hangs.
+        self.mvn.write_text(textwrap.dedent(f"""\
+            #!{sys.executable}
+            import subprocess, sys, time
+            subprocess.Popen([sys.executable, "-c", "import time; time.sleep(120)"])
+            time.sleep(120)
+            """))
+        start = time.monotonic()
+        report = score.grade(self.repo, mvn=str(self.mvn), timeout=1)
+        self.assertLess(time.monotonic() - start, 20)
+        self.assertTrue(any("longer than 1 seconds" in n for n in report.notes))
+
+    def test_timeout_wait_is_bounded_even_if_a_child_survives(self):
+        self.mvn.write_text(textwrap.dedent(f"""\
+            #!{sys.executable}
+            import subprocess, sys, time
+            subprocess.Popen([sys.executable, "-c", "import time; time.sleep(10)"],
+                             start_new_session=True)  # escapes the process-group kill
+            time.sleep(120)
+            """))
+        start = time.monotonic()
+        with mock.patch.object(score, "KILL_WAIT_SECONDS", 1):
+            report = score.grade(self.repo, mvn=str(self.mvn), timeout=1)
+        self.assertLess(time.monotonic() - start, 20)
+        self.assertTrue(any("longer than 1 seconds" in n for n in report.notes))
+
+    def test_find_maven_prefers_wrapper_unless_told_not_to(self):
+        wrapper = self.repo / "mvnw"
+        wrapper.write_text("#!/bin/sh\n")
+        self.assertEqual(score.find_maven(self.repo), str(wrapper))
+        with mock.patch("shutil.which", return_value="/usr/bin/mvn"):
+            self.assertEqual(score.find_maven(self.repo, use_wrapper=False), "/usr/bin/mvn")
 
     def test_maven_missing(self):
         with mock.patch.object(score, "find_maven", return_value=None):

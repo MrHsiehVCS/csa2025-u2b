@@ -60,6 +60,7 @@ POINTS_PER_TEST = None
 REPO_DEFAULT = Path(__file__).resolve().parent.parent
 REPORTS_SUBDIR = Path("target") / "surefire-reports"
 MAVEN_TIMEOUT_SECONDS = 600
+KILL_WAIT_SECONDS = 30  # after a timeout kill, how long to wait for Maven's output pipe to close
 
 
 @dataclass
@@ -74,7 +75,8 @@ class BuildResult:
     """What happened when Maven ran. ok=False means a build error (e.g. compile)."""
     ok: bool
     reports_dir: Path
-    errors: list = field(default_factory=list)  # short lines worth showing
+    errors: list = field(default_factory=list)   # short lines worth showing
+    crashed: list = field(default_factory=list)  # test classes whose JVM exited mid-run
 
 
 @dataclass
@@ -92,6 +94,16 @@ class Report:
     parts: list                                   # [PartScore], in PARTS order
     unmapped: list = field(default_factory=list)  # [TestCase] matching no part
     notes: list = field(default_factory=list)     # messages printed above the table
+
+    @property
+    def passed(self):
+        """Tests passed, over all parts."""
+        return sum(p.passed for p in self.parts)
+
+    @property
+    def total(self):
+        """Tests run, over all parts."""
+        return sum(p.total for p in self.parts)
 
     @property
     def score(self):
@@ -161,7 +173,19 @@ def score(cases, build=None):
             earned = part_points(points, passed, total)
         report.parts.append(PartScore(label, test_class, passed, total, earned, max_points))
 
-    if build is not None and not build.ok:
+    crashed = set(build.crashed) if build is not None else set()
+    if build is not None and not build.ok and crashed:
+        for label, test_class, _ in PARTS:
+            if test_class in crashed:
+                report.notes.append(
+                    f"{label}: the tests stopped early because your code called System.exit "
+                    "(or Java crashed), so the tests that didn't finish score 0. "
+                    "Remove System.exit from your code - let the method return instead.")
+        others = sorted(crashed - {part[1] for part in PARTS})
+        if others:
+            report.notes.append("These tests stopped early because the code called System.exit "
+                                "(or Java crashed): " + ", ".join(others))
+    elif build is not None and not build.ok:
         if cases:
             report.notes.append("Maven reported a build problem, so some tests may not have run.")
         else:
@@ -171,7 +195,7 @@ def score(cases, build=None):
     elif not cases:
         report.notes.append("No test reports were found, so no tests ran. Test score: 0.")
     for part in report.parts:
-        if part.total == 0 and cases:
+        if part.total == 0 and cases and part.test_class not in crashed:
             report.notes.append(f"No tests ran for {part.label} ({part.test_class}), "
                                 "so it scores 0.")
     if report.unmapped:
@@ -185,9 +209,8 @@ def format_report(report):
     rows = [("Part", "Tests passed", "Points")]
     for p in report.parts:
         rows.append((p.label, f"{p.passed} / {p.total}", f"{p.points} / {p.max_points}"))
-    passed = sum(p.passed for p in report.parts)
-    total = sum(p.total for p in report.parts)
-    rows.append(("Total", f"{passed} / {total}", f"{report.score} / {report.max_score}"))
+    rows.append(("Total", f"{report.passed} / {report.total}",
+                 f"{report.score} / {report.max_score}"))
 
     w0 = max(len(r[0]) for r in rows)
     w1 = max(len(r[1]) for r in rows)
@@ -206,15 +229,39 @@ def format_report(report):
     return "\n".join(out)
 
 
-def find_maven(repo):
-    """Return the Maven command to use, or None if Maven isn't installed."""
+def find_maven(repo, use_wrapper=True):
+    """Return the Maven command to use, or None if Maven isn't installed.
+
+    use_wrapper=False ignores a mvnw script in the repo (the autograder must not
+    run student-controlled build tools).
+    """
     wrapper = Path(repo) / ("mvnw.cmd" if os.name == "nt" else "mvnw")
-    if wrapper.is_file():
+    if use_wrapper and wrapper.is_file():
         return str(wrapper)
     return shutil.which("mvn") or shutil.which("mvn.cmd")
 
 
 COMPILE_ERROR = re.compile(r"^\[ERROR\] (.+\.java):\[(\d+),(\d+)\] (.*)$")
+CRASH_MARKER = "The forked VM terminated without properly saying goodbye"
+CRASHED_CLASS = re.compile(r"^\[ERROR\] ([\w$.]+)\s*$")
+
+
+def _crashed_classes(output):
+    """Test classes Surefire lists under "Crashed tests:" (JVM exited, e.g. System.exit)."""
+    if CRASH_MARKER not in output:
+        return []
+    crashed, in_list = [], False
+    for raw in output.splitlines():
+        if raw.startswith("[ERROR] Crashed tests:"):
+            in_list = True
+            continue
+        m = CRASHED_CLASS.match(raw) if in_list else None
+        if m and "." in m.group(1):
+            if m.group(1) not in crashed:
+                crashed.append(m.group(1))
+        else:
+            in_list = False
+    return crashed or ["(unknown test class)"]
 
 
 def _error_lines(output, repo, limit=10):
@@ -255,18 +302,41 @@ def run_maven(repo, mvn=None, timeout=MAVEN_TIMEOUT_SECONDS):
     try:
         output, _ = proc.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
-        if os.name != "nt":
-            os.killpg(proc.pid, signal.SIGKILL)  # also stops the forked test JVM
-        else:
-            proc.kill()
-        proc.communicate()
+        _kill_tree(proc)
+        try:
+            proc.communicate(timeout=KILL_WAIT_SECONDS)
+        except subprocess.TimeoutExpired:
+            proc.stdout.close()  # a stray child still holds the pipe; give up on its output
+            try:
+                proc.wait(timeout=KILL_WAIT_SECONDS)
+            except subprocess.TimeoutExpired:
+                pass
         return BuildResult(False, reports_dir,
                            [f"The tests took longer than {timeout} seconds and were stopped "
                             "(an infinite loop?)."])
     if proc.returncode == 0:
         return BuildResult(True, reports_dir)
+    crashed = _crashed_classes(output)
+    if crashed:
+        return BuildResult(False, reports_dir, crashed=crashed)
     return BuildResult(False, reports_dir,
                        _error_lines(output, repo) or [f"Maven exited with code {proc.returncode}."])
+
+
+def _kill_tree(proc):
+    """Kill Maven and everything it started (the forked test JVMs too)."""
+    try:
+        if os.name != "nt":
+            os.killpg(proc.pid, signal.SIGKILL)  # Maven runs in its own session/group
+        else:
+            subprocess.run(["taskkill", "/F", "/T", "/PID", str(proc.pid)],
+                           capture_output=True, timeout=30)
+    except (OSError, subprocess.SubprocessError):
+        pass
+    try:
+        proc.kill()
+    except OSError:
+        pass
 
 
 def grade(repo=REPO_DEFAULT, mvn=None, timeout=MAVEN_TIMEOUT_SECONDS):
@@ -281,7 +351,8 @@ def main(argv=None):
                     help="project folder (default: the folder above grading/)")
     ap.add_argument("--reports", type=Path,
                     help="score existing Surefire reports in this folder instead of running Maven")
-    ap.add_argument("--mvn", help="Maven command to use (default: mvnw or mvn on PATH)")
+    ap.add_argument("--mvn", help="Maven command to use (default: the project's mvnw if it has "
+                                  "one, else mvn on PATH)")
     ap.add_argument("--timeout", type=int, default=MAVEN_TIMEOUT_SECONDS,
                     help="seconds before the test run is stopped (default: %(default)s)")
     args = ap.parse_args(argv)

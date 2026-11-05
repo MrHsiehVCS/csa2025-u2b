@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="u2bpp.PartCIsPalindromeTests" time="0.1" tests="10" errors="0" skipped="0" failures="0">
+  <testcase name="oddLengthPalindromeInCapitalLetters" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+  <testcase name="oddLengthPalindromeInLowercaseLetters" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+  <testcase name="longPalindrome" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+  <testcase name="emptyOrLettersFreePhraseIsAPalindrome" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+  <testcase name="ignoresNumbersSpacesAndSymbols" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+  <testcase name="evenLengthPalindromeInLowercaseLetters" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+  <testcase name="returnsFalseForNonPalindromes" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+  <testcase name="evenLengthPalindromeInCapitalLetters" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+  <testcase name="fastEnoughOnAVeryLongPalindrome" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+  <testcase name="ignoresCapitalization" classname="u2bpp.PartCIsPalindromeTests" time="0.01"/>
+</testsuite>
