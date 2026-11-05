@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="u2bpp.PartBTests" time="0.1" tests="13" errors="0" skipped="0" failures="0">
+  <testcase name="scoreLineFormat" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="quitsOnFirstNo" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="printsWelcomeLineFirst" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="promptsUsePrint" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="anyPlaysRoundWithRandomPick" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="invalidYesNoAsksAgain" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="scoreCountsMatchRounds" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="thanksForPlayingLast" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="tieWording" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="playsRoundWithTypedPick" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="oneResultAndScoreLinePerRound" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="invalidPickAsksAgain" classname="u2bpp.PartBTests" time="0.01"/>
+  <testcase name="nonTieWording" classname="u2bpp.PartBTests" time="0.01"/>
+</testsuite>

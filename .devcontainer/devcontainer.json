@@ -1,0 +1,25 @@
+{
+  "name": "Unit 2b (Java 21)",
+  // Java version: keep in sync with maven.compiler.release in pom.xml
+  "image": "mcr.microsoft.com/devcontainers/java:1-21-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "none",
+      "installMaven": "true",
+      "installGradle": "false"
+    },
+    // python3 for `python3 grading/score.py` (standard library only)
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "os-provided",
+      "installTools": "false"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "vscjava.vscode-java-pack"
+      ]
+    }
+  },
+  "postCreateCommand": "mvn -q -DskipTests test-compile"
+}

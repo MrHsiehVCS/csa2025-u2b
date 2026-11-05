@@ -1,0 +1,14 @@
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-surefire-plugin:3.6.1:test (default-test) on project u2bpp: 
+[ERROR] 
+[ERROR] See {repo}/target/surefire-reports for the individual test results.
+[ERROR] See dump files (if any exist) [date].dump, [date]-jvmRun[N].dump and [date].dumpstream.
+[ERROR] ExecutionException The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
+[ERROR] Command was /bin/sh -c cd '{repo}' && '/usr/lib/jvm/java-21-openjdk-amd64/bin/java' '-jar' '{repo}/target/surefire/surefirebooter-20261105013111672_6.jar' '{repo}/target/surefire' '2026-11-05T01-31-11_308-jvmRun1' 'surefire-20261105013111672_4tmp' 'surefire_1-20261105013111672_5tmp'
+[ERROR] Process Exit Code: 0
+[ERROR] Crashed tests:
+[ERROR] u2bpp.PartBTests
+[ERROR] org.apache.maven.surefire.booter.SurefireBooterForkException: ExecutionException The forked VM terminated without properly saying goodbye. VM crash or System.exit called?
+[ERROR] Command was /bin/sh -c cd '{repo}' && '/usr/lib/jvm/java-21-openjdk-amd64/bin/java' '-jar' '{repo}/target/surefire/surefirebooter-20261105013111672_6.jar' '{repo}/target/surefire' '2026-11-05T01-31-11_308-jvmRun1' 'surefire-20261105013111672_4tmp' 'surefire_1-20261105013111672_5tmp'
+[ERROR] Process Exit Code: 0
+[ERROR] Crashed tests:
+[ERROR] u2bpp.PartBTests

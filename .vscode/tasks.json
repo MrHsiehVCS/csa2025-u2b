@@ -25,7 +25,7 @@
       "args": [
         "-cp",
         "target/classes",
-        "u4pp.Main"
+        "u2bpp.Main"
       ],
       "group": "test",
       "problemMatcher": []

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="u2bpp.PartCExecuteTests" time="0.1" tests="7" errors="0" skipped="0" failures="0">
+  <testcase name="reportsANonPalindromeWithThePhraseAsTyped" classname="u2bpp.PartCExecuteTests" time="0.01"/>
+  <testcase name="reportsAPalindrome" classname="u2bpp.PartCExecuteTests" time="0.01"/>
+  <testcase name="promptsUsePrint" classname="u2bpp.PartCExecuteTests" time="0.01"/>
+  <testcase name="matchesTheSampleRunExactly" classname="u2bpp.PartCExecuteTests" time="0.01"/>
+  <testcase name="stopsWhenTheUserAnswersN" classname="u2bpp.PartCExecuteTests" time="0.01"/>
+  <testcase name="keepsAskingUntilN" classname="u2bpp.PartCExecuteTests" time="0.01"/>
+  <testcase name="reasksAfterAnInvalidAnswer" classname="u2bpp.PartCExecuteTests" time="0.01"/>
+</testsuite>

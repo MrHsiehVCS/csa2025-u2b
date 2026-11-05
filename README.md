@@ -2,15 +2,85 @@
 
 For this project, you will be completing the code for two classes: `RockPaperScissors` and `PalindromeTester`. Each of these classes have some code that has already been written for you. You should not change any of the provided code. Instead, you should add in your own code in order to fulfill the project requirements. You will also need to JavaDoc all your classes.
 
+## About the starter code
+
+- **It compiles.** A method that promises to return a value (like `results`, which returns an `int`) won't compile unless it returns something. So instead of being left blank, `results` and `isPalindrome` start with this line:
+
+  ```java
+  throw new UnsupportedOperationException("TODO: ... delete this line and write your code");
+  ```
+
+  That line lets the project compile and run before you've written anything. `play` and `execute` don't return a value, so they are simply empty.
+- **Every test starts red.** Since the starter methods don't do anything yet, every test fails at first. If you run a test on `results` or `isPalindrome` now, it fails with that "not written yet" message. This is expected, not a broken project. A test only turns green when your code makes it pass.
+- **Delete the `throw` line** when you start writing a method, then write your code in its place.
+- To try your code by hand, open `Main.java` and uncomment **one** block at a time.
+
+## How to write a method
+
+You will learn about writing methods next unit, but this project asks you to write a few small **helper methods** now. Here is a fully worked example that has nothing to do with this project, so you can see every piece. Copy the *shape* of it, not the code.
+
+```java
+/**
+ * A small program that works out the tip on a restaurant bill.
+ */
+public class TipCalculator {
+
+    public static void main(String[] args) {
+        double tip = calculateTip(40.0, 15);   // call the method; the answer comes back into tip
+        System.out.println("Tip: $" + tip);    // prints Tip: $6.0
+    }
+
+    /**
+     * Calculates the tip for a bill.
+     *
+     * @param bill    the total of the bill, in dollars
+     * @param percent the tip percentage, such as 15 for 15%
+     * @return the tip amount, in dollars
+     */
+    private static double calculateTip(double bill, int percent) {
+        double tip = bill * percent / 100.0;
+        return tip;
+    }
+}
+```
+
+The parts of the method:
+
+- **`private static`** - write this at the start of every helper method in this project. `private` means only this class can use it (so it doesn't count as an extra public method), and `static` means you call it without making an object.
+- **`double`** - the *return type*: what kind of value the method gives back. Use `int`, `boolean`, `String`, etc. as needed, or `void` if the method only prints and gives nothing back.
+- **`calculateTip`** - the method's name. Start with a verb and use camelCase.
+- **`(double bill, int percent)`** - the *parameters*: values the method needs, each with a type and a name. Use `()` if it needs none.
+- **`return tip;`** - sends the answer back to whoever called the method. A non-`void` method must always reach a `return`.
+- **The call** `calculateTip(40.0, 15)` - runs the method with `bill = 40.0` and `percent = 15`, and the call is replaced by the returned value.
+
+**JavaDoc** is the `/** ... */` comment right above a class or method. This is the commenting the rubric expects. For every method, write one sentence saying what it does, then:
+
+- one `@param name description` line for **each** parameter (skip if there are none), and
+- one `@return description` line saying what it gives back (skip for `void` methods).
+
+Every class also gets a JavaDoc comment above it, like the one above `TipCalculator`.
+
 ## Part A - RockPaperScissors.java - results()
 
 The method `results` should accept player and computer input (`"R"`, `"P"` or `"S"`, lowercase or capital), and return an integer: `1` if the player wins, `0` if it is a tie, and `-1` if the player loses.
 
-This part has one test - `doesRockPaperScissorLogicCorrectly`
+For example, `results("R", "S")` returns `1` (Rock beats Scissors), `results("p", "S")` returns `-1` (Scissors beats Paper), and `results("s", "S")` returns `0`. The first parameter is always the player's pick.
 
-## PART B - RockPaperScissors.java
+This part has **5 tests**, in the **Part A - results** group of the Testing panel:
 
-For **Part B** you are going to complete the class `RockPaperScissors`. The class simulates a game of Rock-Paper-Scissors against a computer. The completed project will do the following:
+| Test | What it checks |
+|---|---|
+| returns 1 when the player wins (capital letters) | `R` vs `S`, `P` vs `R`, `S` vs `P` all return `1` |
+| returns -1 when the player loses (capital letters) | `R` vs `P`, `P` vs `S`, `S` vs `R` all return `-1` |
+| returns 0 when both pick the same (capital letters) | `R` vs `R`, `P` vs `P`, `S` vs `S` all return `0` |
+| works the same with lowercase letters (all 9 pairs) | the same 9 pairs typed in lowercase, such as `"r"` vs `"s"` |
+| works the same with a mix of lowercase and capital letters | one pick lowercase and the other capital, such as `"r"` vs `"P"` |
+
+When a test fails, its message shows the call, what it should return, what your code returned, and a likely cause.
+
+## Part B - RockPaperScissors.java - play()
+
+For **Part B** you are going to complete the method `play` in `RockPaperScissors`. It plays a game of Rock-Paper-Scissors against the computer. The completed method will do the following:
 
 1. Prompt the user to select *Rock*, *Paper*, or *Scissors*.
    - Users can choose *Rock* by inputting either *R* or *r*.
@@ -18,95 +88,76 @@ For **Part B** you are going to complete the class `RockPaperScissors`. The clas
    - Users can choose *Scissors* by inputting either *S* or *s*.
    - Users can choose *Any* by inputting either *A* or *a*. If a user selects *Any* then a random selection is made for them, the same way it is done for the computer.
 2. Have the computer secretly select one of the three options, randomly.
-3. Using the results method from part A, output both selections and whether the user wins, loses, or ties.
-4. Keep track of and display how many times the user has won, lost and tied
+3. Using the `results` method from Part A, output both selections and whether the user wins, loses, or ties.
+4. Keep track of and display how many times the user has won, lost and tied.
 5. Keep playing the game until the user chooses to stop.
 
-### PART B - Implementation order
-1. create a helper method that returns a random choice between `"r"`, `"p"`, or `"s"`
-2. use the scanner to take in player input, and the helper method to generate a computer choice, then use the `results` method from PART A to output the `int` of who won
-3. change the `int` output to show the proper output. 
-  - ex: `You both picked Rock. Its a tie!`, or `You picked Rock, and the Computer picked Paper. You lose!`
-4. add a loop of some sort that repeats this over and over, asking the user if they want to continue. 
-  - Have the loop exit based on the user input
-  - ex: `Would you like to play again? (Y)es or (N)o:`
-5. add variables to keep track of how many wins/ties/losses the player has experienced. 
-  - print these out at the right time, with the correct format
-  - ex: `You have 0 wins and 3 losses and 1 ties`
-6. add functionality to check for valid input.
-  - requires nesting while loops
+### Part B - Implementation order
 
-### PART B - Code Structure and Helper Functions
+1. Create a helper method that returns a random choice: `"r"`, `"p"`, or `"s"`.
+2. Use the Scanner to read the player's pick and the helper method to make the computer's pick, then use the `results` method from Part A to find out who won (`1`, `0` or `-1`).
+3. Turn that `int` into the right message, for example:
+   - `You both picked Rock. It's a tie!`
+   - `You picked Rock, and the Computer picked Paper. You lose!`
+4. Add a loop that repeats this over and over, asking the user if they want to continue.
+   - Have the loop exit based on the user's answer.
+   - The question is `Would you like to play again? (Y)es or (N)o: `
+5. Add three `int` variables to keep track of the wins, losses and ties.
+   - Print them after every round, in exactly this format: `You have 0 wins and 3 losses and 1 ties`
+6. Check for valid input. If the user types something that isn't a valid answer, print `Invalid input, please try again` and ask the same question again.
+   - This needs a loop inside your game loop.
 
-When building your `play()` method, it's important to break down complex tasks into smaller, reusable helper methods. This makes your code easier to read, test, and debug. Here's how to approach structuring your code:
+### Part B - Code Structure and Helper Methods
 
-#### What is a Helper Method?
+When building your `play()` method, break the work into smaller **helper methods** (see [How to write a method](#how-to-write-a-method)). This makes your code easier to read and debug.
 
-A helper method is a method that handles a specific, well-defined task. Helper methods should:
+A helper method handles one specific, well-defined task. Helper methods should:
 
 - Do **one thing** well
-- Be reusable (you might call them multiple times)
+- Be reusable (you might call them more than once)
 - Make the main method easier to read and understand
 
-#### Recommended Helper Methods for PART B
+#### Recommended helper methods for Part B
 
-1. **`getRandomChoice()`** - Returns a random choice (`"r"`, `"p"`, or `"s"`)
-   - Purpose: Generate the computer's choice
-   - Can also be used when the player chooses "Any"
-   - This should be a simple method that just returns one random string
+All of these are `private static` methods in `RockPaperScissors`.
 
-2. **`getPlayerChoice(Scanner sc)`** - Prompts the user for R/P/S/A and returns valid input
-   - Purpose: Handle all the logic for getting valid player input
-   - Should loop until valid input is received
-   - Should handle invalid input with error messages
-   - Should return lowercase `"r"`, `"p"`, `"s"`, or `"a"`
+1. **`String getRandomChoice()`** - returns a random choice: `"r"`, `"p"`, or `"s"`.
+   - Used for the computer's pick, and again when the player picks Any.
+2. **`String getPlayerChoice(Scanner sc)`** - prompts for R/P/S/A and returns a valid pick.
+   - Loops until the input is valid, printing `Invalid input, please try again` after each invalid input.
+   - Returns lowercase `"r"`, `"p"`, `"s"`, or `"a"`.
+3. **`boolean getYesNoInput(Scanner sc, String prompt)`** - asks a yes/no question.
+   - Loops until the answer is Y or N (capital or lowercase).
+   - Returns `true` for yes and `false` for no.
+   - The same pattern is useful again in Part C.
+4. **`int playRound(Scanner sc)`** - plays one complete round.
+   - Gets the player's pick, makes the computer's pick, and prints the round's result line.
+   - Returns `1` for a win, `0` for a tie, or `-1` for a loss, so that `play` can update its three counters.
+5. **`String formatChoice(String choice)`** - turns `"r"` into `"Rock"`, `"p"` into `"Paper"`, and `"s"` into `"Scissors"`.
 
-3. **`getYesNoInput(Scanner sc, String prompt)`** - Gets Y/N input from the user
-   - Purpose: Reusable method for asking yes/no questions
-   - Should validate input and loop until valid
-   - Should return `true` for yes, `false` for no
-   - This same pattern can be reused in PalindromeTester!
+#### How to put the helper methods together
 
-4. **`playRound(Scanner sc, int[] scores)`** - Handles one complete round of RPS
-   - Purpose: Encapsulate all the logic for playing a single round
-   - Gets player choice, generates computer choice, determines winner
-   - Updates and displays scores
-   - Makes the main `play()` loop much simpler
-
-5. **`formatChoice(String choice)`** - Converts `"r"` to `"Rock"`, `"p"` to `"Paper"`, etc.
-   - Purpose: Convert the internal representation to user-friendly output
-   - Helps with displaying results in a readable format
-
-#### How to Put Helper Methods Together
-
-The main `play()` method should be a high-level overview of what the game does:
+The `play()` method should read like an overview of the game:
 
 ```java
 public static void play(Scanner sc) {
-    // Print welcome message
-    // Initialize score variables
-    // Main game loop:
-    //   - Play one round (call playRound helper)
-    //   - Ask if they want to continue (call getYesNoInput helper)
-    // Print goodbye message
+    // Print the welcome line
+    // Make the three counters (wins, losses, ties), all starting at 0
+    // Game loop:
+    //   - Play one round (call playRound) and update a counter using the int it returns
+    //   - Print the score line
+    //   - Ask if they want to play again (call getYesNoInput)
+    // Print the goodbye line
 }
 ```
 
-Each helper method should handle one specific task. For example, `getPlayerChoice()` should:
-- Print the prompt
-- Loop until valid input
-- Print error messages for invalid input
-- Return the valid choice
+**Key principle**: if you find yourself writing similar code in more than one place, that's a sign you should make a helper method!
 
-**Key Principle**: If you find yourself writing similar code in multiple places, that's a sign you should create a helper method!
+### Part B Sample Run
 
+Once you are done, your output should look exactly like this sample run. It includes what the player typed (after each `: `).
 
-Once you are done, your output should look like the **Sample Run** below.
-The sample output includes player input. 
-
-### PART B Sample Run
-
-```java
+```text
 Welcome to Rock Paper Scissors
 Would you like to pick (R)ock, (P)aper, (S)cissors, or (A)ny: r
 You both picked Rock. It's a tie!
@@ -126,25 +177,95 @@ Would you like to pick (R)ock, (P)aper, (S)cissors, or (A)ny: p
 You picked Paper, and the Computer picked Scissors. You lose!
 You have 0 wins and 3 losses and 1 ties
 Would you like to play again? (Y)es or (N)o: asdofjas;dfk
-Invalid Input, please try again
+Invalid input, please try again
 Would you like to play again? (Y)es or (N)o: N
-Thanks for playing! 
+Thanks for playing!
 ```
 
-Hint: 
-- You might want to make helper methods for contained bits of functionality. For example:
-  - a helper method for getting a random choice between R/P/S
-  - a helper method that displays/handles one full round of RPS
+### Output rules
+
+The tests check your output exactly, character for character. These are the rules they enforce:
+
+- **Prompts use `print`, not `println`**, so the player types on the same line as the question. Each prompt ends with a colon and a space (`: `):
+  - `Would you like to pick (R)ock, (P)aper, (S)cissors, or (A)ny: `
+  - `Would you like to play again? (Y)es or (N)o: `
+- **Every other message uses `println`**, so it is a line of its own. In the tests, what the player types does not appear in the output, so the message printed after a prompt continues that prompt's line. That's why a `println` prompt breaks the expected line layout.
+- **Exactly these lines**, and nothing else (no blank lines, no extra or debugging prints):
+  1. `Welcome to Rock Paper Scissors` once, first.
+  2. For each round: one result line, then one score line.
+  3. `Thanks for playing!` once, last.
+- **Result lines**, where X and Y are `Rock`, `Paper` or `Scissors`:
+  - a tie: `You both picked X. It's a tie!` (with the apostrophe in `It's`)
+  - otherwise: `You picked X, and the Computer picked Y. You win!` or `... You lose!`
+- **Score line**: `You have W wins and L losses and T ties`, where W, L and T are the counts so far. Always `wins`, `losses` and `ties`, even for 1.
+- **Invalid input**: print `Invalid input, please try again` (lowercase `input`), then ask the same question again. This applies to both questions.
+- **Picks and answers** may be typed as capital or lowercase letters: R/r, P/p, S/s, A/a, Y/y and N/n.
+- No message has a space at the end (only the two prompts do).
+
+### Part B tests
+
+This part has **13 tests**, in the **Part B - play** group of the Testing panel. Each test checks one feature, so a missing feature fails only its own test. Only the Any test types A; the others type R, P or S. The computer's pick is random, but every test accepts every possible computer pick, so a correct program passes every time. (Some tests play many rounds so that ties and non-ties both show up.)
+
+| Test | What it checks |
+|---|---|
+| prints the welcome line first | the first line is `Welcome to Rock Paper Scissors` |
+| shows the prompts exactly, using print so each answer is typed on the same line | both prompts, exact text, printed with `print` |
+| prints one result line and one score line per round, and nothing extra | no blank lines or extra messages |
+| plays a round with the pick you typed (R, P or S, capital or lowercase) | `r`/`R` is Rock, `p`/`P` is Paper, `s`/`S` is Scissors |
+| says You win! or You lose! with both picks when the picks are different | exact wording, and the right winner |
+| says It's a tie! when both picks are the same | exact tie wording |
+| picking A (Any) plays a round with a random pick for you | `a`/`A` becomes a random Rock, Paper or Scissors |
+| an invalid pick prints Invalid input, please try again and asks again | for example `x`, then asks for a pick again |
+| an invalid Y/N answer prints Invalid input, please try again and asks again | for example `maybe`, then asks the question again |
+| stops right away when the player answers n or N | no more rounds after `n` or `N` |
+| prints the score line exactly: You have W wins and L losses and T ties | exact score-line format |
+| the score counts match the rounds played | after each round, exactly one count goes up by 1 |
+| prints Thanks for playing! as the last line | exact goodbye line, no space at the end |
+
+When a test fails, its message shows what it expected, what your program printed (with what the test typed), and a likely cause.
 
 ## PART C - PalindromeTester.java
 
 For **PART C**, you need to complete the class `PalindromeTester`. The class tests whether or not a given `String` from the user is a palindrome.
 
-For the sake of this project, a palindrome is defined as a `String` that reads the same forward and backwards when spaces, numbers, punctuation, and capitalization are all ignored.
+For this project, a palindrome is a `String` that reads the same forwards and backwards when you look **only at its letters** and **ignore capitalization**. Spaces, numbers, punctuation, and other symbols are all ignored. A phrase that is empty or has no letters at all (like `""` or `"!! 123 321 !!"`) **counts as a palindrome**, so `isPalindrome` returns `true` for it.
 
-The method `isPalindrome` should take in a string and return a boolean for whether or not the string is a palindrome, as defined in the paragraph above. The input string could have any number of spaces, punctuation, etc. Finishing this function should clear up 10 tests - all the ones starting with `isPalindrome_whenCalledWith...`.
+For example, `isPalindrome("raCecAr")` and `isPalindrome("taco cat!")` return `true`, and `isPalindrome("abca")` returns `false`.
 
-After finishing `isPalindrome`, you will work on `execute()`. You should continually prompt the user for words to test until the user chooses to stop. Your output should look like the **Sample Run** below.
+The method `isPalindrome` should take in a string and return a boolean for whether or not the string is a palindrome, as defined above. The input string could have any number of spaces, punctuation, etc.
+
+`isPalindrome` has **10 tests**, in the **Part C - isPalindrome** group of the Testing panel:
+
+| Test | What it checks |
+|---|---|
+| returns true for an odd-length palindrome in capital letters | `"XYZYX"` |
+| returns true for an even-length palindrome in capital letters | `"QWERREWQ"` |
+| returns true for an odd-length palindrome in lowercase letters | `"abcdcba"` |
+| returns true for an even-length palindrome in lowercase letters | `"abccba"` |
+| returns true for a long palindrome | a 72-letter palindrome |
+| ignores capitalization | `"NeveroddorEven"` and `"raCecAr"` |
+| ignores numbers, spaces, and symbols | `"r98123 ace  137&&109c 00ar"` and `"taco cat!"` |
+| returns false for phrases that are not palindromes | `"thisISnoTApalindrome"`, `"thi@@isIsNot       a Palindrome"`, and `"abca"` |
+| returns true for an empty phrase or a phrase with no letters | `""` and `"!! 123 321 !!"` |
+| is fast enough on a very long palindrome (performance) | a 26,624-letter palindrome |
+
+When a test fails, its message shows the phrase (shortened if it is long), what `isPalindrome` should return, what your code returned, and a likely cause.
+
+After finishing `isPalindrome`, you will work on `execute()`. You should continually prompt the user for phrases to test until the user chooses to stop. Your output should look exactly like the **Part C Sample Run** below.
+
+`execute` has **7 tests**, in the **Part C - execute** group of the Testing panel. They type input into your program one line at a time and show each typed line right after the prompt, just like on screen, so a failing test's output looks like the sample run.
+
+| Test | What it checks |
+|---|---|
+| matches the README sample run exactly | types the sample-run input and compares your whole output to the sample run, character for character |
+| prints prompts with print, so the typed answer is on the same line | `Enter a phrase: ` and `Keep testing? (Y)es or (N)o: ` use `print`, not `println` |
+| tests one phrase and stops when the user answers n | one phrase, then `n`: the program asks for a phrase only once |
+| keeps asking for phrases until the user answers n | `y` and `Y` keep going; `N` stops |
+| says "&lt;phrase&gt; is a palindrome" for a palindrome | `racecar` prints `racecar is a palindrome` |
+| says "&lt;phrase&gt; is not a palindrome", showing the phrase exactly as typed | `Hello, World!` prints `Hello, World! is not a palindrome` (not a lowercase or filtered copy) |
+| re-asks "Keep testing?" after an invalid answer | any answer other than Y/y/N/n prints `Invalid input, please try again` and asks again |
+
+When a test fails, its message says what it expected, what your program printed, and a likely cause. The sample-run test shows the first line that differs.
 
 ### PART C - Code Structure and Helper Functions
 
@@ -157,6 +278,7 @@ Similar to PART B, you should break down your `execute()` method into smaller he
    - Should validate input and loop until valid
    - Should return `true` for yes, `false` for no
    - Same pattern you used in RockPaperScissors - you can copy that helper method here!
+   - **Copying `getYesNoInput` from `RockPaperScissors` into `PalindromeTester` is expected and does not cost you DRY points.** You haven't learned how to share one method between two classes yet. DRY is about not repeating code *inside* a class.
 
 2. **Helper methods for `isPalindrome()`** - Break down the palindrome checking logic
    - Consider creating a method that filters/processes the string (removes spaces, punctuation, etc.)
@@ -179,12 +301,14 @@ The main `execute()` method should:
 
 ### Part C Sample Run
 
-```java
+The text after each prompt is what the user typed.
+
+```text
 Welcome to Palindrome Tester
 Enter a phrase: racecar
 racecar is a palindrome
 Keep testing? (Y)es or (N)o: asdfhsa;g
-Invalid Input, please try again
+Invalid input, please try again
 Keep testing? (Y)es or (N)o: Y
 Enter a phrase: ra^124c8098  eCA@R
 ra^124c8098  eCA@R is a palindrome
@@ -196,14 +320,43 @@ Keep testing? (Y)es or (N)o: N
 
 ## Grading Breakdown
 
-- Code compiles & runs without errors: 2 pts
+**Graded by your teacher/TAs (10 points):**
+
+- Code compiles & runs without errors: 2 points
 - Formatting/indentation: 2 points
-- All code commented: 2 points
-- No public methods/attributes besides the ones specified: 2 point
-- All code is DRY (Don't repeat yourself): 2 points
-- Passes all test cases: 20 points (20 tests, so 1pt/test)
-Total: 30 points
+- All code commented (JavaDoc on every class and method, like the example in [How to write a method](#how-to-write-a-method)): 2 points
+- No public methods/attributes besides the ones specified: 2 points
+- All code is DRY (Don't repeat yourself): 2 points (copying `getYesNoInput` into `PalindromeTester` is expected and doesn't count against you)
+
+**Test score (20 points), worked out per part:**
+
+| Part | Tests | Points |
+|---|---|---|
+| Part A - results | 5 | 2 |
+| Part B - play | 13 | 11 |
+| Part C - isPalindrome | 10 | 4 |
+| Part C - execute | 7 | 3 |
+| **Total** | **35** | **20** |
+
+For each part, you earn that part's points times the fraction of its tests you pass, rounded to a whole number (halves round up). For example, passing 10 of the 13 Part B tests earns 11 × 10/13 = 8.46, so **8 points**.
+
+**Total: 30 points**
+
+### Check your score
+
+In the Codespace terminal, from the project folder, run:
+
+```text
+python3 grading/score.py
+```
+
+It runs all the tests and prints your test score for each part and in total, the same way your teacher and TAs score it. If your code doesn't compile, it shows the compile errors and a test score of 0. Each test has a time limit of a few seconds, so an infinite loop fails only the tests that run into it. Don't call `System.exit` anywhere: it stops that part's tests, so they all score 0. Don't edit the test files: you are graded with the official tests. (Teachers: grading setup notes are in [grading/TEACHERS.md](grading/TEACHERS.md).)
 
 
 ## Extra Credit
-- make your RPS computer AI smarter.
+
+Finished early? Try one or more of these. **Extra credit does not affect your test score** - it can't raise or lower your test points - and your required work must still pass every test. Each one only needs things you've already learned (variables, `String` methods, `Math.random`, `if`/`else`, and loops; no arrays).
+
+1. **A smarter computer.** In `RockPaperScissors`, use three counters to keep track of how many times the player has picked Rock, Paper, and Scissors. Each round, have the computer pick the move that *beats* the player's most common pick so far (pick randomly if there's a tie or no picks yet). Keep the printed output exactly the same, so the tests still pass.
+2. **Rock Paper Scissors Lizard Spock.** In a **new** class (for example `RockPaperScissorsLizardSpock.java`), write a version of the game with the two extra moves: Scissors cuts Paper, Paper covers Rock, Rock crushes Lizard, Lizard poisons Spock, Spock smashes Scissors, Scissors decapitates Lizard, Lizard eats Paper, Paper disproves Spock, Spock vaporizes Rock, and Rock crushes Scissors. Try it from `Main.java`. Keep it in its own class so `RockPaperScissors` still passes its tests.
+3. **Palindrome finder.** In a **new** class, write a method that takes a phrase and prints the longest piece of it (a substring) that is a palindrome, using nested loops and `substring`. For example, in `"my racecar is fast"` the longest palindrome piece is `"racecar"`. You can reuse your `isPalindrome` method to check each piece.

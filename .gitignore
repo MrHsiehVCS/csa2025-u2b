@@ -24,3 +24,10 @@ hs_err_pid*
 
 # target files
 /target
+
+# Python cache
+__pycache__/
+
+# Autograder output (grading/autograder.py)
+/result.json
+/release-body.md
